@@ -9,6 +9,7 @@ import parkingRoutes from "./modules/parking/routes/parkingRoutes";
 import accountabilityRoutes from "./modules/accountability/routes/accountabilityRoutes";
 import apartmentRoutes from "./modules/apartment/routes/apartmentRoutes";
 import newsRouter from "./modules/news/routes/newsRoutes"
+import occurrenceRoutes from "./modules/occurrence/routes/occurrenceRoutes";
 dotenv.config();
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/parkings", parkingRoutes);
 app.use("/accountabilities", accountabilityRoutes);
 app.use("/apartments", apartmentRoutes);
 app.use("/news", newsRouter);
+app.use("/occurrences", occurrenceRoutes);
 
 app.use(exceptionHandler);
 

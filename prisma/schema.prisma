@@ -19,16 +19,20 @@ enum UserType {
 }
 
 model User {
-  id          String   @id @default(uuid())
+  id          String       @id @default(uuid())
   fullName    String
-  username    String   @unique
-  email       String   @unique
+  username    String       @unique
+  email       String       @unique
   password    String
-  phoneNumber String?  @unique
-  cpf         String   @unique
+  phoneNumber String?      @unique
+  cpf         String       @unique
   userType    UserType
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  occurrence  occurrence[]
+
+  apartmentId String?
+  apartment   Apartment? @relation(fields: [apartmentId], references: [id])
 }
 
 model Condominium {
@@ -44,8 +48,39 @@ model Condominium {
 
   Parking        Parking[]
   Accountability Accountability[]
-  Apartment       Apartment[]
-  News       News[]
+  Apartment      Apartment[]
+  News           News[]
+  occurrence     occurrence[]
+}
+
+model occurrence {
+  id            String               @id @default(uuid())
+  title         String
+  description   String?
+  type          OccurrenceType
+  status        OccurrenceStatusType @default(OPEN)
+  userId        String
+  user          User                 @relation(fields: [userId], references: [id])
+  condominiumId String
+  condominium   Condominium          @relation(fields: [condominiumId], references: [id])
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  @@map("occurrences")
+}
+
+enum OccurrenceStatusType {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum OccurrenceType {
+  SUGGESTION
+  COMPLAINT
+  REQUEST
+  OTHERS
 }
 
 model PartyRoom {
@@ -86,27 +121,28 @@ model Accountability {
 }
 
 model Apartment {
-  id             String      @id @default(uuid())
-  condominiumId  String
-  floor          Int
-  number         Int
-  createdAt      DateTime    @default(now())
+  id            String   @id @default(uuid())
+  condominiumId String
+  floor         Int
+  number        Int
+  createdAt     DateTime @default(now())
 
   // Relacionamento
-  condominium    Condominium @relation(fields: [condominiumId], references: [id])
+  condominium Condominium @relation(fields: [condominiumId], references: [id])
+  User        User[]
 
   @@map("apartments") // Opcional: nome da tabela no banco, se quiser customizar
 }
 
 model News {
-  id             String      @id @default(uuid())
-  condominiumId  String
-  message        String
-  type           String
-  createdAt      DateTime    @default(now())
+  id            String   @id @default(uuid())
+  condominiumId String
+  message       String
+  type          String
+  createdAt     DateTime @default(now())
 
   // Relacionamento
-  condominium    Condominium @relation(fields: [condominiumId], references: [id])
+  condominium Condominium @relation(fields: [condominiumId], references: [id])
 
   @@map("news") // Opcional: nome da tabela no banco, se quiser customizar
 }
