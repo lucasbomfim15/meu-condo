@@ -10,6 +10,7 @@ import accountabilityRoutes from "./modules/accountability/routes/accountability
 import apartmentRoutes from "./modules/apartment/routes/apartmentRoutes";
 import newsRouter from "./modules/news/routes/newsRoutes"
 import occurrenceRoutes from "./modules/occurrence/routes/occurrenceRoutes";
+import pollRoutes from "./modules/polls/routes/pollRoutes";
 dotenv.config();
 
 const app = express();
@@ -25,6 +26,7 @@ app.use("/accountabilities", accountabilityRoutes);
 app.use("/apartments", apartmentRoutes);
 app.use("/news", newsRouter);
 app.use("/occurrences", occurrenceRoutes);
+app.use("/polls", pollRoutes);
 
 app.use(exceptionHandler);
 
