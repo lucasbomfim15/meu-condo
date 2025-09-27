@@ -33,6 +33,8 @@ model User {
 
   apartmentId String?
   apartment   Apartment? @relation(fields: [apartmentId], references: [id])
+  Poll        Poll[]
+  Vote        Vote[]
 }
 
 model Condominium {
@@ -51,6 +53,7 @@ model Condominium {
   Apartment      Apartment[]
   News           News[]
   occurrence     occurrence[]
+  Poll           Poll[]
 }
 
 model occurrence {
@@ -150,4 +153,46 @@ model News {
 enum AccountabilityType {
   INCOME
   EXPENSE
+}
+
+model Poll {
+  id            String       @id @default(uuid())
+  title         String
+  description   String?
+  creatorId     String
+  creator       User         @relation(fields: [creatorId], references: [id])
+  condominiumId String
+  condominium   Condominium  @relation(fields: [condominiumId], references: [id])
+  status        PollStatus   @default(OPEN)
+  endsAt        DateTime?
+  options       PollOption[]
+  votes         Vote[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model PollOption {
+  id     String @id @default(uuid())
+  pollId String
+  poll   Poll   @relation(fields: [pollId], references: [id])
+  text   String
+  votes  Vote[]
+}
+
+model Vote {
+  id        String     @id @default(uuid())
+  pollId    String
+  poll      Poll       @relation(fields: [pollId], references: [id])
+  optionId  String
+  option    PollOption @relation(fields: [optionId], references: [id])
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  createdAt DateTime   @default(now())
+
+  @@unique([pollId, userId]) // evita voto duplicado por usuário no mesmo poll
+}
+
+enum PollStatus {
+  OPEN
+  CLOSED
 }
