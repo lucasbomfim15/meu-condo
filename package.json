@@ -5,10 +5,9 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "prisma generate && tsc",
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.js",
     "vercel-build": "prisma generate",
     "postinstall": "prisma generate && prisma migrate deploy"
-
   },
   "keywords": [],
   "author": "",
@@ -27,8 +26,11 @@
     "@babel/node": "^7.26.0",
     "@babel/preset-env": "^7.26.9",
     "babel": "^5.8.38",
-    "@vercel/node": "^5.1.16"
-
+    "@vercel/node": "^5.1.16",
+    "multer": "^1.4.5-lts.1",
+    "tesseract.js": "^4.0.3",
+    "pdf-parse": "^1.1.1",
+    "openai": "^4.66.1"
   },
   "devDependencies": {
     "@rocketseat/eslint-config": "^2.2.2",
