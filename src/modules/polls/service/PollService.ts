@@ -3,6 +3,7 @@ import { CreatePollDTO } from "../dtos/request/CreatePollDTO";
 import { VoteDTO } from "../dtos/request/VoteDTO";
 // ...existing code...
 import { PollMapper } from "../mapper/PollMapper";
+import { Poll } from "@prisma/client";
 
 export class PollService {
   constructor(private readonly repo: PollRepository) {}
@@ -21,9 +22,8 @@ export class PollService {
 
   async listByCondo(condominiumId: string) {
     const polls = await this.repo.listByCondominium(condominiumId);
-    // garantir que cada poll traga contagem (ajuste no repo se necessário)
     const pollsWithCounts = await Promise.all(
-      polls.map(async (p) => await this.repo.findByIdWithOptionsAndCounts(p.id))
+      polls.map(async (p: Poll) => await this.repo.findByIdWithOptionsAndCounts(p.id))
     );
     return PollMapper.toResponseDTOs(pollsWithCounts);
   }
