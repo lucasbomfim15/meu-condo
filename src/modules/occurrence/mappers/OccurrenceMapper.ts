@@ -10,6 +10,7 @@ export class OccurrenceMapper {
         dto.type = occurrenceModel.type;
         dto.status = occurrenceModel.status;
         dto.userId = occurrenceModel.userId;
+        dto.criticality = occurrenceModel.criticality ?? "Not defined";
         dto.condominiumId = occurrenceModel.condominiumId;
         dto.createdAt = occurrenceModel.createdAt;
         dto.updatedAt = occurrenceModel.updatedAt || undefined;
