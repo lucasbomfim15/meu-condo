@@ -1,5 +1,5 @@
 import { OccurrenceType } from "@prisma/client";
-import { IsEnum, IsString, IsUUID, Length } from "class-validator";
+import { IsEnum, isString, IsString, IsUUID, Length } from "class-validator";
 
 export class CreateOccurrenceDTO {
     @IsString()

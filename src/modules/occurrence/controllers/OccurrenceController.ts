@@ -12,7 +12,7 @@ export class OccurenceController {
     const occurence = await this.occurenceService.create(body, userId);
     const response = OccurrenceMapper.toResponseDTO(occurence);
 
-    res.status(201).json(response);
+    res.status(201).json(occurence);
   }
 
   async list(req: Request, res: Response, next: NextFunction): Promise<void> {

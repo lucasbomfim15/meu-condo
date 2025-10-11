@@ -6,6 +6,7 @@ export class OccurrenceResponseDTO {
     description: string | null;
     type: OccurrenceType;
     status: OccurrenceStatusType;
+    criticality: string;
     userId: string;
     condominiumId: string
     createdAt: Date;
