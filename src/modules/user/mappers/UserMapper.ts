@@ -12,6 +12,7 @@ export class UserMapper {
       cpf: user.cpf,
       userType: user.userType,
       createdAt: user.createdAt,
+      apartmentId: user.apartmentId,
     };
   }
 }

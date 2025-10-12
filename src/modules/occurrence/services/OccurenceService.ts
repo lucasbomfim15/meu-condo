@@ -18,15 +18,12 @@ export class OccurenceService {
       throw new Error("this occurrence already exists");
     }
     const criticaly = await this.occurenceRepository.definesCriticality(createOccurrenceDTO.description);
-    console.log('Determined Criticality:', criticaly); // Debug
     const occurence = await this.occurenceRepository.create(
       createOccurrenceDTO,
       userId,
       criticaly
     );
-    console.log('Created Occurrence Model: - Service', occurence); // Debug
     const retorno = OccurrenceMapper.toResponseDTO(occurence);
-    console.log('Mapped Occurrence DTO: - Service', retorno); // Debug
     return retorno
   }
 
