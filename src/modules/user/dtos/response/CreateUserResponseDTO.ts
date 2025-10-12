@@ -10,4 +10,5 @@ export class CreateUserResponseDTO {
   cpf: string;
   userType: UserType;
   createdAt: Date;
+  apartmentId: string | null;
 }
