@@ -19,17 +19,24 @@ enum UserType {
 }
 
 model User {
-  id          String       @id @default(uuid())
+  id          String   @id @default(uuid())
   fullName    String
-  username    String       @unique
-  email       String       @unique
+  username    String   @unique
+  email       String   @unique
   password    String
-  phoneNumber String?      @unique
-  cpf         String       @unique
+  phoneNumber String?  @unique
+  cpf         String   @unique
   userType    UserType
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  occurrence  occurrence[]
+
+  // 🔥 Campos para avatar
+  avatarUrl      String? // "/uploads/avatars/user-123-abc.jpg"
+  avatarFileName String? // "minha-foto.jpg" (nome original)
+  avatarMimeType String? // "image/jpeg"
+  avatarSize     Int? // tamanho em bytes
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  occurrence occurrence[]
 
   apartmentId String?
   apartment   Apartment? @relation(fields: [apartmentId], references: [id])
@@ -62,7 +69,6 @@ model occurrence {
   description   String?
   type          OccurrenceType
   status        OccurrenceStatusType @default(OPEN)
-  criticality   String?
   userId        String
   user          User                 @relation(fields: [userId], references: [id])
   condominiumId String
