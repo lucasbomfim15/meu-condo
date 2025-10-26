@@ -1,6 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
+import cloudinary from "../../../config/Cloudnary";
 import { UserRepository } from "../repository/UserRepository";
 
 interface UploadAvatarData {
@@ -9,7 +7,7 @@ interface UploadAvatarData {
 }
 
 export class UploadService {
- constructor(private readonly usersRepository: UserRepository) {}
+  constructor(private readonly usersRepository: UserRepository) {}
 
   async uploadUserAvatar({ userId, file }: UploadAvatarData) {
     // Verificar se usuário existe
@@ -24,39 +22,50 @@ export class UploadService {
       throw new Error('Tipo de arquivo não permitido. Use: JPEG, PNG ou WebP');
     }
 
-    // Criar diretório se não existir
-    const uploadDir = path.join(process.cwd(), 'uploads', 'avatars');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
-    // Gerar nome único para o arquivo
-    const fileHash = crypto.randomUUID();
-    const fileExtension = path.extname(file.originalname);
-    const newFileName = `${userId}-${fileHash}${fileExtension}`;
-    const filePath = path.join(uploadDir, newFileName);
-    const fileUrl = `/uploads/avatars/${newFileName}`;
-
-    // Salvar arquivo
-    fs.writeFileSync(filePath, file.buffer);
-
-    // Remover avatar anterior se existir
-    if (user.avatarUrl) {
-      const oldFilePath = path.join(process.cwd(), user.avatarUrl);
-      if (fs.existsSync(oldFilePath)) {
-        fs.unlinkSync(oldFilePath);
+    try {
+      // Remover avatar anterior do Cloudinary se existir
+      if (user.avatarUrl) {
+        const publicIdMatch = user.avatarUrl.match(/\/avatars\/(.+)\./);
+        if (publicIdMatch) {
+          const publicId = `avatars/${publicIdMatch[1]}`;
+          await cloudinary.uploader.destroy(publicId);
+        }
       }
+
+      // Upload para o Cloudinary
+      const uploadResult = await new Promise<any>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'avatars',
+            public_id: `${userId}-${Date.now()}`,
+            transformation: [
+              { width: 500, height: 500, crop: 'limit' },
+              { quality: 'auto' },
+              { fetch_format: 'auto' }
+            ]
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+
+        uploadStream.end(file.buffer);
+      });
+
+      // Atualizar usuário no banco
+      const updatedUser = await this.usersRepository.updateAvatar(userId, {
+        avatarUrl: uploadResult.secure_url,
+        avatarFileName: file.originalname,
+        avatarMimeType: file.mimetype,
+        avatarSize: uploadResult.bytes,
+      });
+
+      return updatedUser;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      throw new Error(`Erro ao fazer upload: ${errorMessage}`);
     }
-
-    // Atualizar usuário no banco
-    const updatedUser = await this.usersRepository.updateAvatar(userId, {
-      avatarUrl: fileUrl,
-      avatarFileName: file.originalname,
-      avatarMimeType: file.mimetype,
-      avatarSize: file.size,
-    });
-
-    return updatedUser;
   }
 
   async removeUserAvatar(userId: string) {
@@ -69,21 +78,27 @@ export class UploadService {
       throw new Error('Usuário não possui avatar');
     }
 
-    // Remover arquivo
-    const filePath = path.join(process.cwd(), user.avatarUrl);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    try {
+      // Extrair public_id da URL do Cloudinary
+      const publicIdMatch = user.avatarUrl.match(/\/avatars\/(.+)\./);
+      if (publicIdMatch) {
+        const publicId = `avatars/${publicIdMatch[1]}`;
+        await cloudinary.uploader.destroy(publicId);
+      }
+
+      // Atualizar banco
+      const updatedUser = await this.usersRepository.updateAvatar(userId, {
+        avatarUrl: null,
+        avatarFileName: null,
+        avatarMimeType: null,
+        avatarSize: null,
+      });
+
+      return updatedUser;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      throw new Error(`Erro ao remover avatar: ${errorMessage}`);
     }
-
-    // Atualizar banco
-    const updatedUser = await this.usersRepository.updateAvatar(userId, {
-      avatarUrl: null,
-      avatarFileName: null,
-      avatarMimeType: null,
-      avatarSize: null,
-    });
-
-    return updatedUser;
   }
 
   async getUserWithAvatar(userId: string) {
