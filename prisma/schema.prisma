@@ -69,6 +69,7 @@ model occurrence {
   description   String?
   type          OccurrenceType
   status        OccurrenceStatusType @default(OPEN)
+  criticality   String?
   userId        String
   user          User                 @relation(fields: [userId], references: [id])
   condominiumId String
