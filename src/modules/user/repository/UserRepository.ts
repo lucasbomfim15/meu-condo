@@ -59,6 +59,12 @@ export class UserRepository {
     });
   }
 
+  async findByIdComplete(id: string): Promise<User | null> {
+  return await this.prismaClient.user.findUnique({
+    where: { id }
+  });
+}
+
   async findByEmail(email: string): Promise<User | null> {
     return await this.prismaClient.user.findUnique({
       where: { email },

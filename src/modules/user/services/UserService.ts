@@ -53,7 +53,7 @@ export class UserService {
   }
 
   async findById(id: string): Promise<CreateUserResponseDTO | null> {
-    const user = await this.usersRepository.findById(id);
+    const user = await this.usersRepository.findByIdComplete(id);
     if (!user) {
       throw new UserNotFoundException("User not found!");
     }
