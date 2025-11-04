@@ -76,7 +76,7 @@ export class UserRepository {
   }
 
   async delete(id: string) {
-    await this.prismaClient.user.delete({ where: { id } });
+    await this.prismaClient.user.update({ where: { id }, data: { deletedAt: new Date() } });
   }
 
   async findByUsername(username: string): Promise<User | null> {
