@@ -63,7 +63,7 @@ export class OccurrenceRepository {
 
     const candidateLabels = ['Alto', 'Medio', 'Baixo']
 
-   const response = await fetch("https://api-inference.huggingface.co/models/facebook/bart-large-mnli", {
+   const response = await fetch("https://router.huggingface.co/hf-inference/models/facebook/bart-large-mnli", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${env.HUGGINGFACE_API_TOKEN}`,
@@ -78,17 +78,13 @@ export class OccurrenceRepository {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
         throw new Error(`Erro na requisição: ${response.status} ${response.statusText}`);
       }
 
-      const data = await response.json();
-
-      if (!data?.labels?.length || !data?.scores?.length) {
-        throw new Error("Resposta inesperada da API Hugging Face.");
-      }
-
-      return data.labels[0] as "Alto" | "Médio" | "Baixo";
+      return data[0].label as "Alto" | "Médio" | "Baixo";
   }
 
 }
