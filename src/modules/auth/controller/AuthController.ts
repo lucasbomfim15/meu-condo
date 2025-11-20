@@ -7,8 +7,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   async login(req: Request, res: Response, next: NextFunction):Promise<void> {
-    const { email, password } = req.body;
-    const result = await this.authService.login(email, password);
+    const { email, password, captchaToken } = req.body;
+    console.log(captchaToken);
+    const result = await this.authService.login(email, password, captchaToken);
     res.status(200).json(result);
   }
 }
