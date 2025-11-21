@@ -21,15 +21,14 @@ router.post("/", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) =>
 router.get(
   "/condominium/:condominiumId",
   authenticateJWT,
-  authorizeRole("ADMIN"),
   (req, res, next) => controller.listByCondo(req, res, next)
 );
 
-router.get("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) =>
+router.get("/:id", authenticateJWT, (req, res, next) =>
   controller.findById(req, res, next)
 );
 
-router.put("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) =>
+router.put("/:id", authenticateJWT, (req, res, next) =>
   controller.update(req, res, next)
 );
 
