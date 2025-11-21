@@ -25,11 +25,11 @@ router.get(
   (req, res, next) => controller.listByCondo(req, res, next)
 );
 
-router.get("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) =>
+router.get("/:id", authenticateJWT, authorizeRole("ADMIN", "USER"), (req, res, next) =>
   controller.findById(req, res, next)
 );
 
-router.put("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) =>
+router.put("/:id", authenticateJWT, authorizeRole("ADMIN", "USER"), (req, res, next) =>
   controller.update(req, res, next)
 );
 

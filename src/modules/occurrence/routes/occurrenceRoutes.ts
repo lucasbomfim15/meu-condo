@@ -18,7 +18,7 @@ const router = Router();
 
 
 router.post("/", authenticateJWT, (req, res, next) => occurrenceController.create(req, res, next));
-router.get("/", authenticateJWT, authorizeRole("ADMIN"),  (req, res, next) => occurrenceController.list(req, res, next));
+router.get("/", authenticateJWT, authorizeRole("ADMIN", "USER"),  (req, res, next) => occurrenceController.list(req, res, next));
 router.get("/mines", authenticateJWT, (req, res, next) => occurrenceController.listMine(req, res, next));
 router.get("/:id", (req, res, next) => occurrenceController.findById(req, res, next));
 router.delete("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => occurrenceController.delete(req, res, next));
