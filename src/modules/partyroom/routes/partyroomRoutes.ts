@@ -18,19 +18,19 @@ const partyRoomControllers = new PartyRoomsController(partyRoomService);
 
 const router = Router();
 
-router.post("/", authenticateJWT,  (req, res, next) =>
+router.post("/", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) =>
   partyRoomControllers.create(req, res, next)
 );
 
-router.get("/", authenticateJWT,(req, res, next) =>
+router.get("/", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) =>
   partyRoomControllers.listAll(req, res, next)
 );
 
-router.get("/:id", authenticateJWT, (req, res, next) =>
+router.get("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) =>
   partyRoomControllers.findById(req, res, next)
 );
 
-router.put("/:id", authenticateJWT, (req, res, next) =>
+router.put("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) =>
   partyRoomControllers.update(req, res, next)
 );
 

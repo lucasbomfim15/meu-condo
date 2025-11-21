@@ -15,10 +15,10 @@ const parkingController = new ParkingController(parkingService);
 
 const router = Router();
 
-router.post("/", authenticateJWT, (req, res, next) => parkingController.create(req, res, next));
-router.get("/", authenticateJWT, (req, res, next) => parkingController.listAll(req, res, next));
-router.get("/:id", authenticateJWT, (req, res, next) => parkingController.findById(req, res, next));
-router.put("/:id", authenticateJWT, (req, res, next) => parkingController.update(req, res, next));
+router.post("/", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => parkingController.create(req, res, next));
+router.get("/", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => parkingController.listAll(req, res, next));
+router.get("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => parkingController.findById(req, res, next));
+router.put("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => parkingController.update(req, res, next));
 router.delete("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => parkingController.delete(req, res, next));
 
 export default router;
