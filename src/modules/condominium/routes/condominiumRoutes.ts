@@ -16,9 +16,9 @@ const condominiumController = new CondominiumsController(condominiumService);
 const router = Router();
 
 router.post("/", (req, res, next) => condominiumController.create(req, res, next));
-router.get("/", authenticateJWT, authorizeRole("ADMIN"),  (req, res, next) => condominiumController.listAll(req, res, next));
-router.get("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => condominiumController.findById(req, res, next));
+router.get("/", authenticateJWT, authorizeRole("ADMIN", "USER"),  (req, res, next) => condominiumController.listAll(req, res, next));
+router.get("/:id", authenticateJWT, authorizeRole("ADMIN", "USER"), (req, res, next) => condominiumController.findById(req, res, next));
 router.delete("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => condominiumController.delete(req, res, next));
-router.put("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => condominiumController.update(req, res, next));
+router.put("/:id", authenticateJWT, authorizeRole("ADMIN", "USER"), (req, res, next) => condominiumController.update(req, res, next));
 
 export default router;

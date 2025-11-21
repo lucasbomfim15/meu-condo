@@ -38,10 +38,10 @@ const upload = multer({
 const router = Router();
 
 router.post("/", (req, res, next) => usersController.create(req, res, next));
-router.get("/", authenticateJWT, authorizeRole("ADMIN"),  (req, res, next) => usersController.listAll(req, res, next));
+router.get("/", authenticateJWT, authorizeRole("ADMIN", "USER"),  (req, res, next) => usersController.listAll(req, res, next));
 router.get("/:id", authenticateJWT, (req, res, next) => usersController.findById(req, res, next));
 router.delete("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => usersController.delete(req, res, next));
-router.put("/:id", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) => usersController.update(req, res, next));
+router.put("/:id", authenticateJWT, authorizeRole("ADMIN", "USER"), (req, res, next) => usersController.update(req, res, next));
 
 
 // 🔥 Novas rotas para avatar
