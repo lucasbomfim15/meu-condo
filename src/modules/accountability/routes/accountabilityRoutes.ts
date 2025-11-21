@@ -21,7 +21,7 @@ router.post("/", authenticateJWT, authorizeRole("ADMIN"), (req, res, next) =>
 router.get(
   "/condominium/:condominiumId",
   authenticateJWT,
-  authorizeRole("ADMIN"),
+  authorizeRole("ADMIN", "USER"),
   (req, res, next) => controller.listByCondo(req, res, next)
 );
 
