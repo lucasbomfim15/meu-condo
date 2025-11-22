@@ -13,9 +13,10 @@ export class CreateUserRequestDTO {
   @IsEmail({}, { message: "Invalid email format" })
   email: string;
 
+  @IsOptional()
   @IsString({ message: "Password must be a string" })
   @Length(6, 100, { message: "Password must be at least 6 characters" })
-  password: string;
+  password: string | null;
 
   @IsOptional()
   @IsString({ message: "Phone number must be a string" })

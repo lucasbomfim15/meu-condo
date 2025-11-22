@@ -12,4 +12,11 @@ export class AuthController {
     const result = await this.authService.login(email, password, captchaToken);
     res.status(200).json(result);
   }
+
+  async loginWithGoogle(req: Request, res: Response, next: NextFunction):Promise<void> {
+    const { clerkId } = req.body;
+    console.log(clerkId);
+    const token = await this.authService.loginWithGoogle(clerkId);
+    res.status(200).json({ token });
+  }
 }
