@@ -23,28 +23,32 @@ model User {
   fullName    String
   username    String   @unique
   email       String   @unique
-  password    String
+  password    String?   // 🔥 Agora pode ser null, por causa do login social
   phoneNumber String?  @unique
   cpf         String   @unique
   userType    UserType
 
-  // 🔥 Campos para avatar
-  avatarUrl      String? // "/uploads/avatars/user-123-abc.jpg"
-  avatarFileName String? // "minha-foto.jpg" (nome original)
-  avatarMimeType String? // "image/jpeg"
-  avatarSize     Int? // tamanho em bytes
+  // Social Login
+  provider       String?     // ex: "google"
+  providerId     String?     @unique // ID do Google (sub)
+  
+  // Avatar
+  avatarUrl      String?
+  avatarFileName String?
+  avatarMimeType String?
+  avatarSize     Int?
 
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  deletedAt  DateTime?     
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
 
-  occurrence occurrence[]
-
+  occurrence  occurrence[]
   apartmentId String?
   apartment   Apartment? @relation(fields: [apartmentId], references: [id])
   Poll        Poll[]
   Vote        Vote[]
 }
+
 
 model Condominium {
   id          String      @id @default(uuid())

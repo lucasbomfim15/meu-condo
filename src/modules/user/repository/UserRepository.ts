@@ -115,4 +115,11 @@ export class UserRepository {
       }
     });
   }
+
+  async findByProviderId(providerId: string): Promise<User | null> {
+  if (!providerId) return null;
+  return await this.prismaClient.user.findUnique({
+    where: { providerId },
+  });
+}
 }
