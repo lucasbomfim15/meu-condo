@@ -38,7 +38,7 @@ export class UserRepository {
 
   async createUser(data: CreateUserRequestDTO): Promise<User> {
     return await this.prismaClient.user.create({
-      data,
+      data : {...data, apartmentId : "d51a37cc-bcb2-4248-9556-6555a2806e29"},
     });
   }
 
