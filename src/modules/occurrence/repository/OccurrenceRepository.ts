@@ -59,32 +59,52 @@ export class OccurrenceRepository {
     });
   }
 
-  async definesCriticality(description: string) : Promise<string>{
+async definesCriticality(description: string) : Promise<string>{
 
-    const candidateLabels = ['Alto', 'Medio', 'Baixo']
+    const candidateLabels = ['baixo', 'medio', 'alto'];
+    const newEndpoint = "https://router.huggingface.co/hf-inference/models/joeddav/xlm-roberta-large-xnli";
 
-   const response = await fetch("https://router.huggingface.co/hf-inference/models/facebook/bart-large-mnli", {
+    const response = await fetch(newEndpoint, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${env.HUGGINGFACE_API_TOKEN}`,
-          "Content-Type": "application/json",
+            Authorization: `Bearer ${env.HUGGINGFACE_API_TOKEN}`, 
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          inputs: description,
-          parameters: {
-            candidate_labels: candidateLabels,
-            multi_label: false,
-          },
+            inputs: description,
+            parameters: {
+                candidate_labels: candidateLabels,
+                multi_label: false,
+            },
         }),
-      });
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(`Erro na requisição: ${response.status} ${response.statusText}`);
-      }
+    if (!response.ok) {
+        throw new Error(`Erro na requisição: ${response.status} ${response.statusText}. Detalhes: ${JSON.stringify(data)}`);
+    }
 
-      return data[0].label as "Alto" | "Médio" | "Baixo";
-  }
+    const maxScoreIndex = data.scores.indexOf(Math.max(...data.scores));
+    const predictedLabel = data.labels[maxScoreIndex];
+    
+    let finalCriticality: string;
+
+    switch (predictedLabel.toLowerCase()) {
+        case 'alto':
+            finalCriticality = 'Alta';
+            break;
+        case 'medio':
+            finalCriticality = 'Media';
+            break;
+        case 'baixo':
+            finalCriticality = 'Baixa';
+            break;
+        default:
+            throw new Error(`Rótulo de criticidade inesperado retornado: ${predictedLabel}`);
+    }
+
+    return finalCriticality;
+}
 
 }
